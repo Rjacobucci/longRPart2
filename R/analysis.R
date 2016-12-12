@@ -26,7 +26,7 @@ lrpCV <- function(model){
   for(i in 1:v){
     testDat = dat[dat[,groupingName]%in%subj[(stepsize[i]+1):stepsize[i+1]],]
     data = dat[!dat[,groupingName]%in%subj[(stepsize[i]+1):stepsize[i+1]],]
-    mod <- longRPart(model$nlmeFormula,model$rPartFormula,model$randomFormula,data,R=model$R,control=model$control)
+    mod <- longRPart2(model$nlmeFormula,model$rPartFormula,model$randomFormula,data,R=model$R,control=model$control)
     pred = predict(mod,testDat)
     # need to get the predicted lines at each node,
     # NOT just the regression coefficient
