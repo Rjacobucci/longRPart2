@@ -2,7 +2,7 @@
 # trying to cross-validate
 #
 lrpCV <- function(model){
-#  set.seed(2)
+  #  set.seed(2)
   # extracting the rpart-values
   dat <- model$data
   control <- model$control
@@ -26,11 +26,11 @@ lrpCV <- function(model){
   for(i in 1:v){
     testDat = dat[dat[,groupingName]%in%subj[(stepsize[i]+1):stepsize[i+1]],]
     data = dat[!dat[,groupingName]%in%subj[(stepsize[i]+1):stepsize[i+1]],]
-    mod <- longRPart2(model$nlmeFormula,model$rPartFormula,model$randomFormula,data,R=model$R,control=model$control)
+    mod <- longRPart2(model$lmeFormula,model$rPartFormula,model$randomFormula,data,R=model$R,control=model$control)
     pred = predict(mod,testDat)
     # need to get the predicted lines at each node,
     # NOT just the regression coefficient
-    terms = attr(terms(mod$nlmeFormula),"term.labels")
+    terms = attr(terms(mod$lmeFormula),"term.labels")
     timeVar = data[,names(data)==terms[1]]
     responseName = attr(terms(getResponseFormula(mod$lmeFormula)),"term.labels")
     continuous = !is.factor(timeVar)
@@ -39,8 +39,8 @@ lrpCV <- function(model){
     for(j in 1:length(nodes)){
       subData = data[mod$where==nodes[j],]
       subTest = testDat[pred==mod$frame$yval[nodes[j]],]
-      mod2 <- lme(mod$nlmeFormula,data=subData,random=mod$randomFormula,correlation=mod$R,na.action=na.omit)
-      responseName = attr(terms(getResponseFormula(model$nlmeFormula)),"term.labels")
+      mod2 <- lme(mod$lmeFormula,data=subData,random=mod$randomFormula,correlation=mod$R,na.action=na.omit)
+      responseName = attr(terms(getResponseFormula(model$lmeFormula)),"term.labels")
       for(k in unique(subTest[,names(subTest)==mod$groupingName])){
         observed <- subTest[subTest[,names(subTest)==mod$groupingName]==k,]
         # creating the fake patient (PROBLEMS HERE)
@@ -51,7 +51,7 @@ lrpCV <- function(model){
         expected[,names(expected)==mod$groupingName] <- -1
         subTimeVar <- unique(sort(mod2$data[!is.na(mod2$data[,names(mod2$data)==responseName]),names(mod2$data)==terms[1]]))
         expected[expected[,names(expected)==terms[[1]]]%in%subTimeVar,names(expected)==responseName] = as.vector(mod2$coeff$fixed)
-        mod3 = lme(mod$nlmeFormula,data=rbind(observed,expected),random=mod$randomFormula,correlation=mod$R,na.action=na.omit)
+        mod3 = lme(mod$lmeFormula,data=rbind(observed,expected),random=mod$randomFormula,correlation=mod$R,na.action=na.omit)
         deviances[z,] <- c(k,-2*mod3$logLik)
         z = z+1
       }
@@ -88,9 +88,7 @@ lrpCI <- function(model,B=10,alpha=0.05){
       newDat = rbind(newDat,tempDat)
     }
     newDat[,names(newDat)==model$groupingName]=as.factor(newDat[,names(newDat)==model$groupingName])
-    newModel = rpart(paste(model$groupingName,"~",row.names(model$splits)[1]),
-                     data=newDat,method=list(eval=evaluation,split=split,
-                     init=initialize),parms=model$data,control=newControl)
+    newModel = rpart(paste(model$groupingName,"~",row.names(model$splits)[1]),data=newDat,method=list(eval=evaluation,split=split,init=initialize),parms=model$data,control=newControl)
     models[[b]]=newModel
     if(!is.null(newModel$splits)){
       splitVal[b] = newModel$splits[1,4]

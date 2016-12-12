@@ -4,20 +4,22 @@
 \alias{longRPart2}
 \title{Longitudinal Recursive Partitioning}
 \usage{
-longRPart2(nlmeFormula, method, rPartFormula, randomFormula, data,
-  weight = NULL, R = NULL, control = rpart.control())
+longRPart2(method, model = NULL, randomFormula, fixedFormula = NULL, data,
+  rPartFormula, weight = NULL, R = NULL, control = rpart.control())
 }
 \arguments{
-\item{nlmeFormula}{Formula to be passed to nlme}
-
 \item{method}{Whether to use lme() or nlme(). Use either method="lme" or method="nlme".
 This changes what additional arguments need to be passed.}
 
+\item{model}{Necessary to specify if method="nlme"}
+
+\item{randomFormula}{Random effects to include for nlme() or lme()}
+
+\item{fixedFormula}{Fixed effects to include for nlme() or lme()}
+
+\item{data}{Dataset}
+
 \item{rPartFormula}{Not sure yet}
-
-\item{randomFormula}{Formula to be passed to random= in lme() or nlme()}
-
-\item{data}{Dataset to be used}
 
 \item{weight}{Sample weights to be passed to rpart}
 
