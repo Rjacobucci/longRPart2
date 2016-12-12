@@ -32,7 +32,7 @@ summary(mix1) # get same estimates as in LGM, notice SD not VAR
 ## longRPart2
 
 
-lcart.mod1 <- longRPart2("lme",
+lcart.mod1 <- longRPart2(method="lme",
                          fixedFormula=verbal ~ grade,
                          rPartFormula = ~ Moeducat,
                          randomFormula=~1|id,
@@ -43,4 +43,4 @@ summary(lcart.mod1)
 
 
 lrpPlot(lcart.mod1)
-longRPart2::lrpTreePlot(lcart.mod1,use.n=F)
+lrpTreePlot(lcart.mod1,use.n=F)

@@ -1,3 +1,9 @@
+#' Plot the tree
+#'
+#' @param model Model object from longRPart2()
+#' @param use.n Print N in each node
+#' @param colors Colors to use
+#' @param place Where to place the plot
 #' @export
 
 lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){

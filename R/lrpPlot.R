@@ -1,3 +1,9 @@
+#' Plot Expected Trajectories
+#'
+#' @param model Model object from longRPart2()
+#' @param smoothing Type of smoothing for trajectoris
+#' @param color Color to use
+#' @param place Where to place the plot
 #' @export
 
 lrpPlot <- function(model,smoothing="n",color=NULL,place="bottomright"){
