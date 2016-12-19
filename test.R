@@ -25,7 +25,7 @@ names(wisc.long.sel)[2] <- "grade"
 
 
 
-mix1 <- lme(fixed = verbal ~ grade, random = ~ grade | id,
+mix1 <- nlme(fixed = verbal ~ grade, random = ~ grade | id,
             data = wisc.long, method="ML" )
 summary(mix1) # get same estimates as in LGM, notice SD not VAR
 
