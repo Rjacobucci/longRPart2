@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(psych)\nhead(bfi)\n\nbfi2 <- bfi[complete.cases(bfi),]\nwrite.table(bfi2[,1:25],file=\"bfi2.dat\",col.names=FALSE,row.names=FALSE)\n",
+    "created" : 1482265883477.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2603264062",
+    "id" : "69AA8E1A",
+    "lastKnownWriteTime" : 7669474517175906098,
+    "last_content_update" : 1482266395576,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

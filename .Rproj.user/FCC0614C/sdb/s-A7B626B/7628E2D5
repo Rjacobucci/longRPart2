@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "wisc <- read.table(\"C:/Users/RJacobucci/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat\")\nnames(wisc)<- c(\"V1\",\"V2\",\"V4\",\"V6\",\"P1\",\"P2\",\"P4\", \"P6\", \"Moeducat\")\n\n\n\n\nwisc.verb <- wisc[,c(1:4,9)]\n\n# create subset for plotting\nntot <- nrow(wisc.verb)    # total number of observations\nwisc.verb.sel <- wisc.verb[sample(ntot, 30), ]\n\nwisc.long <- reshape(wisc.verb, varying = c(\"V1\", \"V2\", \"V4\", \"V6\"), v.names = \"verbal\",\n                     times = c(1, 2, 4, 6), direction = \"long\")\n\nwisc.long.sel <- reshape(wisc.verb.sel, varying = c(\"V1\", \"V2\", \"V4\", \"V6\"),\n                         v.names = \"verbal\", times = c(1, 2, 4, 6),\n                         direction = \"long\")\nhead(wisc.long,3)\nnames(wisc.long)[2] <- \"grade\"\nnames(wisc.long.sel)[2] <- \"grade\"\n\n\nfm1 <- nlme(height ~ SSasymp(age, Asym, R0, lrc),\n            data = Loblolly,\n            fixed = Asym + R0 + lrc ~ 1,\n            random = Asym ~ 1,\n            start = c(Asym = 103, R0 = -8.5, lrc = -3.3))\n\n\n\nmix1 <- nlme(verbal ~ SSasymp(), random = ~ grade | id,start=c(1,1),\n             fixed = b0i + b1i | 1,\n            data = wisc.long, method=\"ML\" )\nsummary(mix1) # get same estimates as in LGM, notice SD not VAR\n\n## longRPart2\n\n\nlcart.mod1 <- longRPart2(method=\"lme\",\n                         fixedFormula=verbal ~ grade,\n                         rPartFormula = ~ Moeducat,\n                         randomFormula=~1|id,\n                         data=wisc.long)\n\nsummary(lcart.mod1)\n\n\n\nlrpPlot(lcart.mod1)\nlrpTreePlot(lcart.mod1,use.n=F)\n",
+    "created" : 1482179274472.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1141204553",
+    "id" : "7628E2D5",
+    "lastKnownWriteTime" : 1482179235,
+    "last_content_update" : 1482180569473,
+    "path" : "~/GitHub/longRPart2/test.R",
+    "project_path" : "test.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
