@@ -229,6 +229,7 @@ longRPart2 <- function(method,
   if(method=="lme"){
     model$lmeModel = lme(lmeFormula,data=data,random=randomFormula,correlation=R,na.action=na.omit)
     model$fixedFormula = lmeFormula
+    model$lmeFormula = lmeFormula
   }else if(method=="nlme"){
     model$nlmeModel <- nlme(nlme.model=nlme.model,fixed=fixedFormula,data=data,
          random=randomFormula,correlation=R,na.action=na.omit)

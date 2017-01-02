@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Plot Expected Trajectories\n#'\n#' @param model Model object from longRPart2()\n#' @param smoothing Type of smoothing for trajectoris\n#' @param color Color to use\n#' @param place Where to place the plot\n#' @export\n\nlrpPlot <- function(model,smoothing=\"n\",color=NULL,place=\"bottomright\"){\n  #smoothing can be either n for none, p for partial, or c for complete\n  ### ONLY 'n' implemented for now\n  terms = attr(terms(model$lmeFormula),\"term.labels\")\n  timeVar = model$data[,names(model$data)==terms[1]]\n  responseName = attr(terms(getResponseFormula(model$lmeFormula)),\"term.labels\")\n  continuous = !is.factor(timeVar)\n  nodes = unique(model$where)\n  timeValues = unique(timeVar)\n  if(is.null(color)){\n    color = rainbow(length(nodes),v=0.8)\n  }\n  # need to come up with the plotting range here\n  plotList = list()\n  for(i in 1:length(nodes)){\n    dat=model$data[model$where==nodes[i],]\n    mod = lme(model$lmeFormula,data=dat,random=model$randomFormula,correlation=model$R,na.action=na.omit)\n    if(length(terms)>1){\n      form = formula(paste(responseName,'~as.numeric(',terms[1],')|',paste(terms[-1],sep='\\ '),sep=''))\n    }\n    else{\n      form = formula(paste(responseName,'~as.numeric(',terms[1],')',sep=''))\n    }\n    plotDat = plot(mod,form)\n    condLevels = plotDat$condlevels\n    print(condLevels)\n    pts = list()\n    for(j in 1:length(plotDat$panel.args)){\n      pts[[j]] = tapply(plotDat$panel.args[[j]]$y,plotDat$panel.args[[j]]$x,mean)\n    }\n    plotList[[i]]=pts\n  }\n  plot(as.numeric(timeValues),1:length(timeValues),type='n',xlab='',ylab='',main='',ylim=range(plotList))\n  for(i in 1:length(plotList)){\n    for(j in 1:length(plotList[[i]])){\n      points(as.numeric(names(plotList[[i]][[j]])),plotList[[i]][[j]],type='l',lty=j,col=color[i])\n    }\n  }\n  text1 = paste(\"node\",nodes)\n  lineTypes = c(\"dashed\", \"dotted\", \"dotdash\", \"longdash\", \"twodash\")\n  text2 = character()\n  if(length(terms)>1){\n    for(i in 1:length(condLevels)){\n      text2=c(text2,paste(lineTypes[i],\"line =\",condLevels[[i]][2]))\n    }\n  }\n  legend(place,legend=c(text1,text2),pch=16,col=c(color,rep('black',length(terms[-1]))))\n}\n",
+    "created" : 1483372764009.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3485937762",
+    "id" : "742371D1",
+    "lastKnownWriteTime" : 1482179235,
+    "last_content_update" : 1482179235,
+    "path" : "~/GitHub/longRPart2/R/lrpPlot.R",
+    "project_path" : "R/lrpPlot.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

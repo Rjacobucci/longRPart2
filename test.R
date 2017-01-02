@@ -21,11 +21,16 @@ names(wisc.long)[2] <- "grade"
 names(wisc.long.sel)[2] <- "grade"
 
 
+fm1 <- nlme(height ~ SSasymp(age, Asym, R0, lrc),
+            data = Loblolly,
+            fixed = Asym + R0 + lrc ~ 1,
+            random = Asym ~ 1,
+            start = c(Asym = 103, R0 = -8.5, lrc = -3.3))
 
 
 
-
-mix1 <- nlme(fixed = verbal ~ grade, random = ~ grade | id,
+mix1 <- nlme(verbal ~ SSasymp(), random = ~ grade | id,start=c(1,1),
+             fixed = b0i + b1i | 1,
             data = wisc.long, method="ML" )
 summary(mix1) # get same estimates as in LGM, notice SD not VAR
 
