@@ -1,4 +1,5 @@
 wisc <- read.table("C:/Users/RJacobucci/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
+wisc <- read.table("C:/Users/jacobucc/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
 names(wisc)<- c("V1","V2","V4","V6","P1","P2","P4", "P6", "Moeducat")
 
 

@@ -10,6 +10,7 @@
 #' @param fixedFormula Fixed effects to include for nlme() or lme()
 #' @param data Dataset
 #' @param start Starting values for nlme()
+#' @param group Grouping for nlme()
 #' @param rPartFormula Not sure yet
 #' @param weight Sample weights to be passed to rpart
 #' @param R Correlation matrix to use for nlme. this is correlation=
@@ -32,6 +33,7 @@ longRPart2 <- function(method,
                        fixedFormula=NULL,
                        data,
                        start,
+                       group,
                        rPartFormula,
                        weight=NULL,
                        R=NULL,
@@ -71,15 +73,20 @@ longRPart2 <- function(method,
       list(label=slope,deviance=-2*(model$logLik))
     }
   }else if(method=="nlme"){
-    groupingName = attr(terms(splitFormula(randomFormula,'|')[[2]]),"term.labels")
+    groupingName = attr(terms(splitFormula(group,'~')[[1]]),"term.labels")
+    responseName = attr(terms(getResponseFormula(nlme.model)),"term.labels")
+    groupingFactor = data[,names(data)==groupingName]
 
+      # need to deal with categorical vs. continuous
 
     evaluation <- function(y, wt, parms){
-      model = nlme(nlme.model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%y,],
-                   random=randomFormula,correlation=R,na.action=na.omit)
+      model = nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%y,],
+                   random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
 
       # try not returning slope -- may be only for plotting
-      list(deviance=-2*(model$logLik))
+      slope=1
+      list(label=slope,deviance=-2*(model$logLik))# ,pars=model$coefficients$fixed
+
     }
 
   }
@@ -115,8 +122,8 @@ longRPart2 <- function(method,
     if(method=="lme"){
       rootDev = lme(lmeFormula,data=parms[groupingFactor%in%y,],random=randomFormula,correlation=R,na.action=na.omit)$logLik
     }else if(method=="nlme"){
-      rootDev = nlme(nlme.model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%y,],
-                   random=randomFormula,correlation=R,na.action=na.omit)$logLik
+      rootDev = nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%y,],
+                   random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)$logLik
     }
 
     #
@@ -141,13 +148,14 @@ longRPart2 <- function(method,
             modelRight = try(lme(lmeFormula,data=parms[groupingFactor%in%yRight,],
                                  random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
           }else if(method=="nlme"){
-            modelLeft = try(nlme(nlme.model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yLeft,],
-                           random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
-            modelRight = try(nlme(nlme.model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yRight,],
-                                 random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
+            modelLeft = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yLeft,],
+                           random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
+            modelRight = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yRight,],
+                                 random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
           }
 
-          if(any(class(modelLeft)=='lme') && any(class(modelRight)=='lme')){
+          if(any(class(modelLeft)=='lme') | any(class(modelLeft)=='nlme') &&
+             any(class(modelRight)=='lme') | any(class(modelRight)=='nlme')){
             dev = c(dev,modelLeft$logLik+modelRight$logLik)
           }
           else{
@@ -190,12 +198,13 @@ longRPart2 <- function(method,
             modelRight = try(lme(lmeFormula,data=parms[groupingFactor%in%yRight,],
                                  random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
           }else if(method=="nlme"){
-            modelLeft = try(nlme(nlme.model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yLeft,],
-                                 random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
-            modelRight = try(nlme(nlme.model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yRight,],
-                                  random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
+            modelLeft = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yLeft,],
+                                 random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
+            modelRight = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yRight,],
+                                  random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
           }
-          if(any(class(modelLeft)=='lme') && any(class(modelRight)=='lme')){
+          if(any(class(modelLeft)=='lme') | any(class(modelLeft)=='nlme') &&
+             any(class(modelRight)=='lme') | any(class(modelRight)=='nlme')){
             dev = c(dev,modelLeft$logLik+modelRight$logLik)
           }
           else{
@@ -231,8 +240,8 @@ longRPart2 <- function(method,
     model$fixedFormula = lmeFormula
     model$lmeFormula = lmeFormula
   }else if(method=="nlme"){
-    model$nlmeModel <- nlme(nlme.model=nlme.model,fixed=fixedFormula,data=data,
-         random=randomFormula,correlation=R,na.action=na.omit)
+    model$nlmeModel <- nlme(model=nlme.model,fixed=fixedFormula,data=data,
+         random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
     model$fixedFormula <- fixedFormula
     model$nlme.model <- nlme.model
   }

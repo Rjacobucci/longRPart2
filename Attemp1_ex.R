@@ -74,3 +74,14 @@ summary(model.0)
 
 dev.root = -2 * model.0$logLik
 
+
+
+lcart.mod1 <- longRPart2(method="nlme",
+                         nlme.model=y~b0i+b1i*time,
+                         fixedFormula=b0i+b1i~1,
+                         rPartFormula = ~ z,
+                         group= ~ id,
+                         randomFormula=b0i+b1i~1,
+                         data=ex.data.2,
+                         start=c(10,5))
+
