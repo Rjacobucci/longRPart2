@@ -154,8 +154,8 @@ longRPart2 <- function(method,
                                  random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
           }
 
-          if(any(class(modelLeft)=='lme') | any(class(modelLeft)=='nlme') &&
-             any(class(modelRight)=='lme') | any(class(modelRight)=='nlme')){
+          if(any(class(modelLeft)=='lme')  &&
+             any(class(modelRight)=='lme') ){
             dev = c(dev,modelLeft$logLik+modelRight$logLik)
           }
           else{

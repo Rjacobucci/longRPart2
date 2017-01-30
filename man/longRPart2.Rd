@@ -5,7 +5,7 @@
 \title{Longitudinal Recursive Partitioning}
 \usage{
 longRPart2(method, nlme.model = NULL, randomFormula, fixedFormula = NULL,
-  data, start, rPartFormula, weight = NULL, R = NULL,
+  data, start, group, rPartFormula, weight = NULL, R = NULL,
   control = rpart.control())
 }
 \arguments{
@@ -19,6 +19,8 @@ This changes what additional arguments need to be passed.}
 \item{data}{Dataset}
 
 \item{start}{Starting values for nlme()}
+
+\item{group}{Grouping for nlme()}
 
 \item{rPartFormula}{Not sure yet}
 
