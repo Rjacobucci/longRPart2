@@ -85,4 +85,11 @@ lcart.mod1 <- longRPart2(method="nlme",
                          data=ex.data.2,
                          start=c(10,5))
 plot(lcart.mod1);text(lcart.mod1)
+str(lcart.mod1)
+
+for(j in 1:length(table(lcart.mod1$where))){
+  id <- names(table(lcart.mod1$where))[j]==lcart.mod1$where
+}
+as.numeric(names(table(lcart.mod1$rpart_out$where)))
+lcart.mod1$params.nlme
 
