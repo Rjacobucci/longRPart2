@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(MASS)\nlibrary(nlme)\nlibrary(formula.tools)\n\ngrps = 2\nmean.list = cov.list = res.list = vector(\"list\", grps)\nmean.list[[1]] = c(10,10)\nmean.list[[2]] = c(20,5)\ncov.list[[1]] = matrix(c(100,0,0,25), nrow=2)\ncov.list[[2]] = matrix(c(64,0,0,16), nrow=2)\nres.list[[1]] = 4\nres.list[[2]] = 4\n\nmean.list \ncov.list\nres.list\n\nreff.extractor = function(model){\n  model.eq = model$nlme.model\n  rand.eq = model$randomFormula\n  reffs = all.vars()\n  predvarnames <- attr(attr(rand.eq, \"terms\"), \"term.labels\")\n  \n  lhs.vars(rand.eq)\n}\n\nresamp = function(model, rand.eff, res.var){\n  times = seq(range(model$data$time)[1], range(model$data$time)[2], length.out=1000)\n  cband = matrix(nrow=1000,ncol=2)\n  resids = rnorm(nrow(rand.eff), 0, sqrt(res.var))\n  for(i in 1:length(times)){\n    ys = eval(getCovariateFormula(model$nlme.model)[[2]],data.frame(time=times[i],rand.eff))+resids[i]\n    sort.ys = sort(ys)\n    cband[i,1] = sort.ys[nrow(rand.eff)*.025+1]\n    cband[i,2] = sort.ys[nrow(rand.eff)*.975]\n  }\n  return(cband)\n}\n\n\nplot.longrpart2 = function(model){\n  \n  #change time variable's name to \"time\"\n  time.var = subset(rhs.vars(model$nlme.model), !(rhs.vars(model$nlme.model)%in%lhs.vars(model$fixedFormula)))\n  names(model$data)[which(names(model$data)==time.var)] = \"time\"\n  \n  rand.eff = cbands = vector(\"list\", grps)\n  for(i in 1:grps){\n    rand.eff[[i]] = mvrnorm(10000, mu=mean.list[[i]], Sigma=cov.list[[i]])\n    colnames(rand.eff[[i]]) = lhs.vars(model$randomFormula)\n   # eval(getCovariateFormula(model$nlme.model)[[2]],data.frame(time=range(model$data$time),rand.eff[[i]]))\n  }\n  \n  \n}",
+    "created" : 1487032243081.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2927998055",
+    "id" : "67D34269",
+    "lastKnownWriteTime" : 1487031861,
+    "last_content_update" : 1487031861,
+    "path" : "~/GitHub/longRPart2/R/plotting function.R",
+    "project_path" : "R/plotting function.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
