@@ -9,22 +9,22 @@
 lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){
   indexes = plot(model)
   confounding = (length(model$lmeModel$contrasts)>1)
-  n = length(model$nodeLines)
-  t = length(model$levels)
+  n = length(model$rpart_out$nodeLines)
+  t = length(model$rpart_out$levels)
   plot(model,ylim=range(indexes$y)-c(diff(range(indexes$y))*.125,0),xlim=range(indexes$x)+c(-1,1)*diff(range(indexes$x)*.1))
-  f = model$frame
+  f = model$rpart_out$frame
   leaves = (1:dim(f)[1])[f$var=="<leaf>"]
   terms = attr(terms(model$lmeFormula),"term.labels")
   timeVar = model$data[,names(model$data)==terms[1]]
   responseName = attr(terms(getResponseFormula(model$lmeFormula)),"term.labels")
   continuous = !is.factor(timeVar)
-  nodes = unique(model$where)
+  nodes = unique(model$rpart_out$where)
   timeValues = unique(timeVar)
   # need to come up with the plotting range here
   # plot(0,type='n',xlab='',ylab='',main='',xlim=c(1,8),ylim=c(0,110))
   plotList = list()
   for(i in 1:length(nodes)){
-    dat=model$data[model$where==nodes[i],]
+    dat=model$data[model$rpart_out$where==nodes[i],]
     mod = lme(model$lmeFormula,data=dat,random=model$randomFormula,correlation=model$R,na.action=na.omit)
     if(length(terms)>1){
       form = formula(paste(responseName,'~as.numeric(',terms[1],')|',paste(terms[-1],sep='\ '),sep=''))

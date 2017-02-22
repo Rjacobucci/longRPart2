@@ -13,7 +13,7 @@ lrpPlot <- function(model,smoothing="n",color=NULL,place="bottomright"){
   timeVar = model$data[,names(model$data)==terms[1]]
   responseName = attr(terms(getResponseFormula(model$lmeFormula)),"term.labels")
   continuous = !is.factor(timeVar)
-  nodes = unique(model$where)
+  nodes = unique(model$rpart_out$where)
   timeValues = unique(timeVar)
   if(is.null(color)){
     color = rainbow(length(nodes),v=0.8)
@@ -21,7 +21,7 @@ lrpPlot <- function(model,smoothing="n",color=NULL,place="bottomright"){
   # need to come up with the plotting range here
   plotList = list()
   for(i in 1:length(nodes)){
-    dat=model$data[model$where==nodes[i],]
+    dat=model$data[model$rpart_out$where==nodes[i],]
     mod = lme(model$lmeFormula,data=dat,random=model$randomFormula,correlation=model$R,na.action=na.omit)
     if(length(terms)>1){
       form = formula(paste(responseName,'~as.numeric(',terms[1],')|',paste(terms[-1],sep='\ '),sep=''))
