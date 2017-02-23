@@ -234,6 +234,7 @@ longRPart2 <- function(method,
   model <- list()
   model.rpart = rpart(paste(groupingName,c(rPartFormula)),method=list(eval=evaluation,
           split=split,init=initialize),control=control,data=data,parms=data)
+  model$rpart_out <- model.rpart
 
   if(method=="lme"){
     model$lmeModel = lme(lmeFormula,data=data,random=randomFormula,correlation=R,na.action=na.omit)
@@ -254,16 +255,16 @@ longRPart2 <- function(method,
 
     if(method=="lme"){
       model.out = lme(lmeFormula,data=data[id,],random=randomFormula,correlation=R,na.action=na.omit)
-      summary.lme[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- summary(model.out)
-      fixed_effects[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- fixed.effects(model.out)
+      summary.lme[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
+      fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
     }else if(method=="nlme"){
       model.out <- nlme(model=nlme.model,fixed=fixedFormula,data=data[id,],
                               random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
-      summary.nlme[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- summary(model.out)
-      fixed_effects[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- fixed.effects(model.out)
+      summary.nlme[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
+      fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
     }
   }
-  model$summary.nlme <- params.nlme
+  model$summary.nlme <- summary.nlme #params.nlme
   model$fixed_effects <- fixed_effects
   model$rpart_out <- model.rpart
   model$randomFormula = randomFormula

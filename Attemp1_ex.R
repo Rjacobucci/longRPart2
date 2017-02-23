@@ -84,7 +84,9 @@ lcart.mod1 <- longRPart2(method="nlme",
                          randomFormula=b0i+b1i~1,
                          data=ex.data.2,
                          start=c(10,5))
-plot(lcart.mod1);text(lcart.mod1)
+plot(lcart.mod1$rpart_out);text(lcart.mod1$rpart_out)
+lrpPlot(lcart.mod1) # not working
+lrpTreePlot(lcart.mod1$rpart_out,use.n=F) # not working
 str(lcart.mod1)
 
 for(j in 1:length(table(lcart.mod1$where))){
