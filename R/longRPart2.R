@@ -5,7 +5,7 @@
 #'
 #' @param method Whether to use lme() or nlme(). Use either method="lme" or method="nlme".
 #'        This changes what additional arguments need to be passed.
-#' @param model Necessary to specify if method="nlme"
+#' @param nlme.model Necessary to specify if method="nlme"
 #' @param randomFormula Random effects to include for nlme() or lme()
 #' @param fixedFormula Fixed effects to include for nlme() or lme()
 #' @param data Dataset
@@ -18,9 +18,12 @@
 #' @keywords longitudinal recursive partitioning mixed effects
 #' @import nlme
 #' @import rpart
+#' @import formula.tools
+#' @import MASS
+#' @import ggplot2
 #' @importFrom grDevices dev.cur gray rainbow
 #' @importFrom graphics legend plot points rect text
-#' @importFrom stats formula lm na.omit predict quantile
+#' @importFrom stats formula lm na.omit predict quantile rnorm time
 #' @export
 #' @examples
 #' library(longRPart2)
@@ -234,6 +237,7 @@ longRPart2 <- function(method,
   model <- list()
   model.rpart = rpart(paste(groupingName,c(rPartFormula)),method=list(eval=evaluation,
           split=split,init=initialize),control=control,data=data,parms=data)
+  model$rpart_out <- model.rpart
 
   if(method=="lme"){
     model$lmeModel = lme(lmeFormula,data=data,random=randomFormula,correlation=R,na.action=na.omit)
@@ -247,24 +251,30 @@ longRPart2 <- function(method,
   }
 
   model$leaf_node <- model.rpart$where
-  summary.nlme <- list()
-  fixed_effects <- list()
+  summary = fixed_effects = var.corr = resid.var = list()
   for(j in 1:length(table(model.rpart$where))){
     id <- names(table(model.rpart$where))[j]==model.rpart$where
 
     if(method=="lme"){
       model.out = lme(lmeFormula,data=data[id,],random=randomFormula,correlation=R,na.action=na.omit)
-      summary.lme[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- summary(model.out)
-      fixed_effects[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- fixed.effects(model.out)
+      summary[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
+      fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
+      var.corr[[as.numeric(names(table(model.rpart$where)))[j]]] <-model.out$modelStruct[[1]]
+      resid.var[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$sigma
     }else if(method=="nlme"){
       model.out <- nlme(model=nlme.model,fixed=fixedFormula,data=data[id,],
                               random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
-      summary.nlme[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- summary(model.out)
-      fixed_effects[[as.numeric(names(table(lcart.mod1$rpart_out$where)))[j]]] <- fixed.effects(model.out)
+      summary[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
+      fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
+      var.corr[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$modelStruct[[1]]
+      resid.var[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$sigma
     }
   }
-  model$summary.nlme <- params.nlme
+
+  model$summary <- summary
   model$fixed_effects <- fixed_effects
+  model$var.corr <- var.corr
+  model$resid.var <- resid.var
   model$rpart_out <- model.rpart
   model$randomFormula = randomFormula
   model$R = R

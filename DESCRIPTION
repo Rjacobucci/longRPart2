@@ -12,3 +12,10 @@ Description: Performs recursive partitioning of mixed effects models,
     extension of the original longRPart package.
 License: GPL
 RoxygenNote: 5.0.1
+Depends: 
+         nlme,
+         ggplot2,
+         rpart,
+         formula.tools,
+         MASS
+         
