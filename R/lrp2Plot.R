@@ -11,7 +11,7 @@
 #' # example goes here
 
 lrp2Plot = function(model){
-
+  # test
   #helper sub-functions
   param.extract = function(model){ #extracts parameters from model to be used in calculations
     grps = length(unique(model$leaf_node)) #number of nodes
