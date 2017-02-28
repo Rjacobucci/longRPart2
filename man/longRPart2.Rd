@@ -12,6 +12,8 @@ longRPart2(method, nlme.model = NULL, randomFormula, fixedFormula = NULL,
 \item{method}{Whether to use lme() or nlme(). Use either method="lme" or method="nlme".
 This changes what additional arguments need to be passed.}
 
+\item{nlme.model}{Necessary to specify if method="nlme"}
+
 \item{randomFormula}{Random effects to include for nlme() or lme()}
 
 \item{fixedFormula}{Fixed effects to include for nlme() or lme()}
@@ -29,8 +31,6 @@ This changes what additional arguments need to be passed.}
 \item{R}{Correlation matrix to use for nlme. this is correlation=}
 
 \item{control}{Control function to be passed to rpart()}
-
-\item{model}{Necessary to specify if method="nlme"}
 }
 \description{
 Longitudinal Recursive Partitioning

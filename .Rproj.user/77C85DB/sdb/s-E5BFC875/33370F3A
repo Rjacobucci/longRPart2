@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: longRPart2\nType: Package\nTitle: Recursive partitioning of longitudinal data\nVersion: 0.0.0.9000\nDate: 2016-12-11\nAuthor: Sam Stewart and Mohamed Abdolell\nMaintainer: Ross Jacobucci <rcjacobuc@gmail.com>\nDepends:\n    nlme,rpart\nDescription: Performs recursive partitioning of mixed effects models,\n    specifically for longitudinal data. The package is an\n    extension of the original longRPart package.\nLicense: GPL\nRoxygenNote: 5.0.1\nDepends: \n         nlme,\n         ggplot2,\n         rpart,\n         formula.tools,\n         MASS\n         \n",
+    "created" : 1488225983088.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3888774186",
+    "id" : "33370F3A",
+    "lastKnownWriteTime" : 1488226057,
+    "last_content_update" : 1488226057831,
+    "path" : "~/GitHub/longRPart2/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
