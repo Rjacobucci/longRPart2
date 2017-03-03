@@ -44,4 +44,3 @@ library(longRPart2)
 \keyword{mixed}
 \keyword{partitioning}
 \keyword{recursive}
-

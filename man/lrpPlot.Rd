@@ -18,4 +18,3 @@ lrpPlot(model, smoothing = "n", color = NULL, place = "bottomright")
 \description{
 Plot Expected Trajectories
 }
-

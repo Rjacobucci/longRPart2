@@ -11,7 +11,6 @@
 #' # example goes here
 
 lrp2Plot = function(model){
-  # test
   #helper sub-functions
   param.extract = function(model){ #extracts parameters from model to be used in calculations
     grps = length(unique(model$leaf_node)) #number of nodes
@@ -82,21 +81,24 @@ lrp2Plot = function(model){
   }
   curve.struc = function(model,grps,mean.est,cbands){
     #data structure
-    curve.df = data.frame(matrix(nrow=3000*grps, ncol=4))
-    names(curve.df) = c("y","grp","time","col")
+    curve.df = data.frame(matrix(nrow=3000*grps, ncol=5))
+    names(curve.df) = c("y","grp","time","node","ltype")
     #score column
     ycol=NULL
     for(i in 1:grps){
       ycol = c(ycol,mean.est[[i]],cbands[[i]][,1],cbands[[i]][,2])
     }
     curve.df$y = ycol
-    #groups (to distinguish each curve)
+    #curve groups (to distinguish each curve)
     curve.df$grp = sort(rep(1:(3*grps),1000))
+    #to distinguish mean line type from cband line type
+    curve.df$ltype = as.factor(rep(c(rep(1,1000),rep(2,2000)),grps))
     #time variable
     times = seq(range(model$data$time)[1], range(model$data$time)[2], length.out=1000)
     curve.df$time = rep(c(rep(times,3)),grps)
-    #colors
-    curve.df$col = as.factor(sort(rep(1:grps, 3000)))
+    #node
+    curve.df$node = as.factor(sort(rep(unique(model$leaf_node), 3000)))
+
     return(curve.df)
   }
 
@@ -127,10 +129,14 @@ lrp2Plot = function(model){
   curve.df = curve.struc(model,params$grps,mean.est,cbands)
 
   #plot
-  p = ggplot(data=curve.df,aes(x=time, y=y, group=grp, color=col)) +
-    geom_smooth(se=F) + theme_bw() +
-    labs(x = time.var, y = out.name, color = "Node\n") + #
-    scale_color_manual(labels = sort(unique(model$leaf_node)), values = c("blue", "red")) +
+  model$data$node = model$leaf_node
+
+  p = ggplot(data=curve.df,aes(x=time, y=y, group=grp, color="black", linetype=ltype)) +
+    geom_smooth(se=F) + theme_bw() + guides(linetype=F) + facet_wrap(~node) +
+    labs(title=paste("Node"), x = time.var, y = out.name) +
+    xlim(min(curve.df$time), max(curve.df$time)) +
+    ylim(min(c(curve.df$y,model$data$y)),max(c(curve.df$y,model$data$y))) +
+    scale_color_manual(labels = sort(unique(model$leaf_node)), values=c("black")) +
     theme(
       plot.background = element_blank()
       ,panel.grid.major = element_blank()
@@ -138,7 +144,8 @@ lrp2Plot = function(model){
       ,panel.border = element_blank()
       ,axis.line.x = element_line(color="black")
       ,axis.line.y = element_line(color="black")
-      ,legend.position="right")
+      ,legend.position="none") +
+    geom_line(data=model$data, aes(x=time,y=y,group=id,color="black",linetype=NULL), alpha=.2) + facet_grid(~node)
 
   return(p)
 }

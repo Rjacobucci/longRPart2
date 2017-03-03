@@ -18,4 +18,3 @@ lrpTreePlot(model, use.n = TRUE, colors = NULL, place = "bottomright")
 \description{
 Plot the tree
 }
-
