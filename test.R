@@ -48,5 +48,5 @@ summary(lcart.mod1)
 
 
 
-lrpPlot(lcart.mod1)
+lrp2Plot(lcart.mod1)
 lrpTreePlot(lcart.mod1,use.n=F)
