@@ -114,6 +114,7 @@ lrp2Plot = function(model){
     out.name = lhs.vars(model$nlme.model)
   }
   names(model$data)[which(names(model$data)==time.var)] = "time"
+  names(model$data)[which(names(model$data)==out.name)] = "y"
 
   #extract group and parameter estimates
   params = param.extract(model)
@@ -132,7 +133,7 @@ lrp2Plot = function(model){
   model$data$node = model$leaf_node
 
   p = ggplot(data=curve.df,aes(x=time, y=y, group=grp, color="black", linetype=ltype)) +
-    geom_smooth(se=F) + theme_bw() + guides(linetype=F) + facet_wrap(~node) +
+    geom_smooth(se=F, method="gam") + theme_bw() + guides(linetype=F) + facet_wrap(~node) +
     labs(title=paste("Node"), x = time.var, y = out.name) +
     xlim(min(curve.df$time), max(curve.df$time)) +
     ylim(min(c(curve.df$y,model$data$y)),max(c(curve.df$y,model$data$y))) +
@@ -144,7 +145,8 @@ lrp2Plot = function(model){
       ,panel.border = element_blank()
       ,axis.line.x = element_line(color="black")
       ,axis.line.y = element_line(color="black")
-      ,legend.position="none") +
+      ,legend.position="none"
+      ,plot.title = element_text(hjust = 0.5)) +
     geom_line(data=model$data, aes(x=time,y=y,group=id,color="black",linetype=NULL), alpha=.2) + facet_grid(~node)
 
   return(p)
