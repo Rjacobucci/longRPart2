@@ -172,7 +172,8 @@ longRPart2 <- function(method,
         good[x==xUnique[i]]=dev[i]
       }
       good = good[1:(length(good)-1)]
-      list(goodness=good+abs(rootDev)*(good!=0)*2,direction=rep(-1,length(good)))
+      #list(goodness=good+abs(rootDev)*(good!=0)*2,direction=rep(-1,length(good)))
+      list(goodness=(-2*rootDev)-(-2*good),direction=rep(-1,length(good)))
     }
     #
     ###for categorical variables
@@ -215,7 +216,8 @@ longRPart2 <- function(method,
           }
         }
       }
-      list(goodness=dev+abs(rootDev)*(dev!=0)*2,direction=dir)
+      #list(goodness=dev+abs(rootDev)*(dev!=0)*2,direction=dir) # p.24 for equation
+      list(goodness=(-2*rootDev)-(-2*good),direction=dir) # p.24 for equation
     }
   }
   # The init function.  This is used, to the best of my knowledge, to initialize the process.
