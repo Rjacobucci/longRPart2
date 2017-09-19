@@ -50,7 +50,15 @@ lcart.mod1 <- longRPart2(method="lme",
                          rPartFormula = ~ Moeducat + noise,
                          randomFormula=~1|id,
                          data=wisc.long,
-                         control=rpart.control(cp=.0025))
+                         control=rpart.control(cp=.01))
+
+
+lcart.mod1 <- longRPart2(method="lme",
+                         fixedFormula=verbal ~ grade,
+                         rPartFormula = ~ Moeducat + noise,
+                         randomFormula=~1|id,
+                         data=wisc.long,
+                         min.dev=20)
 
 lrpCV(lcart.mod1)
 
