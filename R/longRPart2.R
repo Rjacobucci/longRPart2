@@ -14,6 +14,9 @@
 #' @param rPartFormula Not sure yet
 #' @param weight Sample weights to be passed to rpart
 #' @param R Correlation matrix to use for nlme. this is correlation=
+#' @param min.dev The minimum decrease in deviance to choose a split.
+#'        Note that this overrides the default cp criterion in
+#'        rpart.control()
 #' @param control Control function to be passed to rpart()
 #' @keywords longitudinal recursive partitioning mixed effects
 #' @import nlme
@@ -40,11 +43,24 @@ longRPart2 <- function(method,
                        rPartFormula,
                        weight=NULL,
                        R=NULL,
+                       min.dev=NULL,
                        control = rpart.control()){
 
 
   if(method=="lme"){
     lmeFormula <- fixedFormula
+  }
+
+  if(is.null(min.dev)==FALSE){
+
+    if(method=="lme"){
+      mod <- lme(lmeFormula,data=data,random=randomFormula,correlation=R,na.action=na.omit)
+    }else{
+      mod <- nlme(model=nlme.model,fixed=fixedFormula,data=parmsdata,
+                  random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
+    }
+
+    control$cp <- 1 - (-2*mod$logLik - min.dev)/(-2*mod$logLik)
   }
 
 
@@ -172,7 +188,8 @@ longRPart2 <- function(method,
         good[x==xUnique[i]]=dev[i]
       }
       good = good[1:(length(good)-1)]
-      list(goodness=good+abs(rootDev)*(good!=0)*2,direction=rep(-1,length(good)))
+      #list(goodness=good+abs(rootDev)*(good!=0)*2,direction=rep(-1,length(good)))
+      list(goodness=-2*(rootDev-good),direction=rep(-1,length(good)))
     }
     #
     ###for categorical variables
@@ -215,7 +232,8 @@ longRPart2 <- function(method,
           }
         }
       }
-      list(goodness=dev+abs(rootDev)*(dev!=0)*2,direction=dir)
+      #list(goodness=dev+abs(rootDev)*(dev!=0)*2,direction=dir) # p.24 for equation
+      list(goodness=-2*(rootDev-good),direction=dir) # p.24 for equation
     }
   }
   # The init function.  This is used, to the best of my knowledge, to initialize the process.

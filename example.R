@@ -1,7 +1,7 @@
 #wisc <- read.table("C:/Users/RJacobucci/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
-#wisc <- read.table("C:/Users/Ross/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
+wisc <- read.table("C:/Users/rjacobuc/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
 
-wisc <- read.table(file.choose()) # use directory to find wisc4vpe.dat
+#wisc <- read.table(file.choose()) # use directory to find wisc4vpe.dat
 names(wisc)<- c("V1","V2","V4","V6","P1","P2","P4", "P6", "Moeducat")
 
 # install longRPart2 from source
@@ -33,7 +33,7 @@ lcart.mod1 <- longRPart2(method="lme",
                          rPartFormula = ~ Moeducat,
                          randomFormula=~1|id,
                          data=wisc.long)
-
+lcart.mod1$rpart_out
 
 
 summary(lcart.mod1)

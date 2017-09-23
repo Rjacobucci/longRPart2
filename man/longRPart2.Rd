@@ -6,7 +6,7 @@
 \usage{
 longRPart2(method, nlme.model = NULL, randomFormula, fixedFormula = NULL,
   data, start, group, rPartFormula, weight = NULL, R = NULL,
-  control = rpart.control())
+  min.dev = NULL, control = rpart.control())
 }
 \arguments{
 \item{method}{Whether to use lme() or nlme(). Use either method="lme" or method="nlme".
@@ -29,6 +29,10 @@ This changes what additional arguments need to be passed.}
 \item{weight}{Sample weights to be passed to rpart}
 
 \item{R}{Correlation matrix to use for nlme. this is correlation=}
+
+\item{min.dev}{The minimum decrease in deviance to choose a split.
+Note that this overrides the default cp criterion in
+rpart.control()}
 
 \item{control}{Control function to be passed to rpart()}
 }

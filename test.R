@@ -1,11 +1,14 @@
 wisc <- read.table("C:/Users/RJacobucci/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
 wisc <- read.table("C:/Users/jacobucc/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
+wisc <- read.table("C:/Users/rjacobuc/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat")
 names(wisc)<- c("V1","V2","V4","V6","P1","P2","P4", "P6", "Moeducat")
 
 
 
 
 wisc.verb <- wisc[,c(1:4,9)]
+
+wisc.verb$noise <- round(rnorm(nrow(wisc.verb)),2)
 
 # create subset for plotting
 ntot <- nrow(wisc.verb)    # total number of observations
@@ -18,8 +21,8 @@ wisc.long.sel <- reshape(wisc.verb.sel, varying = c("V1", "V2", "V4", "V6"),
                          v.names = "verbal", times = c(1, 2, 4, 6),
                          direction = "long")
 head(wisc.long,3)
-names(wisc.long)[2] <- "grade"
-names(wisc.long.sel)[2] <- "grade"
+names(wisc.long)[3] <- "grade"
+names(wisc.long.sel)[3] <- "grade"
 
 
 fm1 <- nlme(height ~ SSasymp(age, Asym, R0, lrc),
@@ -38,15 +41,32 @@ summary(mix1) # get same estimates as in LGM, notice SD not VAR
 ## longRPart2
 
 
+lme1 <- lme(verbal ~ grade,random=~1|id,wisc.long)
+
+
+
 lcart.mod1 <- longRPart2(method="lme",
                          fixedFormula=verbal ~ grade,
-                         rPartFormula = ~ Moeducat,
+                         rPartFormula = ~ Moeducat + noise,
                          randomFormula=~1|id,
-                         data=wisc.long)
+                         data=wisc.long,
+                         control=rpart.control(cp=.01))
+
+
+lcart.mod1 <- longRPart2(method="lme",
+                         fixedFormula=verbal ~ grade,
+                         rPartFormula = ~ Moeducat + noise,
+                         randomFormula=~1|id,
+                         data=wisc.long,
+                         min.dev=20)
+
+lrpCV(lcart.mod1)
 
 summary(lcart.mod1)
 
 
+printcp(lcart.mod1$rpart_out)
+plot(lcart.mod1$rpart_out)
 
 lrp2Plot(lcart.mod1)
 lrpTreePlot(lcart.mod1,use.n=F)
