@@ -56,7 +56,7 @@ longRPart2 <- function(method,
     if(method=="lme"){
       mod <- lme(lmeFormula,data=data,random=randomFormula,correlation=R,na.action=na.omit)
     }else{
-      mod <- nlme(model=nlme.model,fixed=fixedFormula,data=parmsdata,
+      mod <- nlme(model=nlme.model,fixed=fixedFormula,data=data,
                   random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
     }
 
@@ -133,107 +133,114 @@ longRPart2 <- function(method,
   #      goodness: m-1 values, same idea as before
 
   ### pass in the dataset through the parms variable, with subj as y
-  split <- function(y, wt, x, parms, continuous){
-    print(paste("splitting:",length(unique(x)),"values"))
+  split <- function(y, wt, x, parms, continuous) {
+    print(paste("splitting:", length(unique(x)), "values"))
     dev = vector()
     xUnique = unique(x)
-
-    if(method=="lme"){
-      rootDev = lme(lmeFormula,data=parms[groupingFactor%in%y,],random=randomFormula,correlation=R,na.action=na.omit)$logLik
-    }else if(method=="nlme"){
-      rootDev = nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%y,],
-                   random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)$logLik
+    if (method == "lme") {
+      rootDev = lme(lmeFormula, data = parms[groupingFactor %in%
+                                               y, ], random = randomFormula, correlation = R,
+                    na.action = na.omit)$logLik
     }
-
-    #
-    # for continuous variables
-    #
-    if(continuous){
-      # need to find splits for the UNIQUE values of x
-      # no point in recalculating splits for the
-      # same age/height/etc...
-      for(i in xUnique){
-        yLeft = y[x<=i]
-        yRight = y[x>i]
-        # build the models only if the split created satisfies the minbucket.
-        # could add other split controls later
-        if(length(yLeft) < control$minbucket || length(yRight) < control$minbucket){
-          dev = c(dev,0)
-        }
-        else{
-          if(method=="lme"){
-            modelLeft = try(lme(lmeFormula,data=parms[groupingFactor%in%yLeft,],
-                                random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
-            modelRight = try(lme(lmeFormula,data=parms[groupingFactor%in%yRight,],
-                                 random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
-          }else if(method=="nlme"){
-            modelLeft = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yLeft,],
-                           random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
-            modelRight = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yRight,],
-                                 random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
-          }
-
-          if(any(class(modelLeft)=='lme')  &&
-             any(class(modelRight)=='lme') ){
-            dev = c(dev,modelLeft$logLik+modelRight$logLik)
-          }
-          else{
-            dev = c(dev,0)
-          }
-        }
-      }
-      # need to duplicate the observations for duplicate values of x
-      good = rep(0,length(x))
-      for(i in 1:length(xUnique)){
-        good[x==xUnique[i]]=dev[i]
-      }
-      good = good[1:(length(good)-1)]
-      #list(goodness=good+abs(rootDev)*(good!=0)*2,direction=rep(-1,length(good)))
-      list(goodness=-2*(rootDev-good),direction=rep(-1,length(good)))
+    else if (method == "nlme") {
+      rootDev = nlme(model = nlme.model, fixed = fixedFormula,
+                     data = parms[groupingFactor %in% y, ], random = randomFormula,
+                     correlation = R, na.action = na.omit, start = start,
+                     group = group)$logLik
     }
-    #
-    ###for categorical variables
-    #
-    else{
-      order = rep(0,length(xUnique))
-      response = parms[,names(parms)==responseName]
-      # establishing the ordering
-      for(i in 1:length(xUnique)){
-        order[i] = mean(response[x==xUnique[i]],na.rm=TRUE)
-      }
-      dir = sort(order,index.return=TRUE)$ix
-      # testing the direction
-      for(i in 1:(length(dir)-1)){
-        yLeft = y[x%in%dir[1:i]]
-        yRight = y[x%in%dir[(i+1):length(dir)]]
-        # build the models only if the split created satisfies the minbucket.
-        # could add other split controls later
-        if(length(yLeft) < control$minbucket || length(yRight) < control$minbucket){
-          dev = c(dev,0)
+    if (continuous) {
+      for (i in xUnique) {
+        yLeft = y[x <= i]
+        yRight = y[x > i]
+        if (length(yLeft) < control$minbucket || length(yRight) <
+            control$minbucket) {
+          dev = c(dev, 0)
         }
-        else{
-          if(method=="lme"){
-            modelLeft = try(lme(lmeFormula,data=parms[groupingFactor%in%yLeft,],
-                                random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
-            modelRight = try(lme(lmeFormula,data=parms[groupingFactor%in%yRight,],
-                                 random=randomFormula,correlation=R,na.action=na.omit),silent=TRUE)
-          }else if(method=="nlme"){
-            modelLeft = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yLeft,],
-                                 random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
-            modelRight = try(nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%yRight,],
-                                  random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group),silent=TRUE)
+        else {
+          if (method == "lme") {
+            modelLeft = try(lme(lmeFormula, data = parms[groupingFactor %in%
+                                                           yLeft, ], random = randomFormula, correlation = R,
+                                na.action = na.omit), silent = TRUE)
+            modelRight = try(lme(lmeFormula, data = parms[groupingFactor %in%
+                                                            yRight, ], random = randomFormula, correlation = R,
+                                 na.action = na.omit), silent = TRUE)
           }
-          if(any(class(modelLeft)=='lme') | any(class(modelLeft)=='nlme') &&
-             any(class(modelRight)=='lme') | any(class(modelRight)=='nlme')){
-            dev = c(dev,modelLeft$logLik+modelRight$logLik)
+          else if (method == "nlme") {
+            modelLeft = try(nlme(model = nlme.model,
+                                 fixed = fixedFormula, data = parms[groupingFactor %in%
+                                                                      yLeft, ], random = randomFormula, correlation = R,
+                                 na.action = na.omit, start = start, group = group),
+                            silent = TRUE)
+            modelRight = try(nlme(model = nlme.model,
+                                  fixed = fixedFormula, data = parms[groupingFactor %in%
+                                                                       yRight, ], random = randomFormula, correlation = R,
+                                  na.action = na.omit, start = start, group = group),
+                             silent = TRUE)
           }
-          else{
-            dev = c(dev,0)
+          if (any(class(modelLeft) == "lme") && any(class(modelRight) ==
+                                                    "lme")) {
+            dev = c(dev, modelLeft$logLik + modelRight$logLik)
+          }
+          else {
+            dev = c(dev, 0)
           }
         }
       }
-      #list(goodness=dev+abs(rootDev)*(dev!=0)*2,direction=dir) # p.24 for equation
-      list(goodness=-2*(rootDev-good),direction=dir) # p.24 for equation
+      good = rep(0, length(x))
+      for (i in 1:length(xUnique)) {
+        good[x == xUnique[i]] = dev[i]
+      }
+      good = good[1:(length(good) - 1)]
+      list(goodness = good + abs(rootDev) * (good != 0) *
+             2, direction = rep(-1, length(good)))
+    }
+    else {
+      order = rep(0, length(xUnique))
+      response = parms[, names(parms) == responseName]
+      for (i in 1:length(xUnique)) {
+        order[i] = mean(response[x == xUnique[i]], na.rm = TRUE)
+      }
+      dir = sort(order, index.return = TRUE)$ix
+      for (i in 1:(length(dir) - 1)) {
+        yLeft = y[x %in% dir[1:i]]
+        yRight = y[x %in% dir[(i + 1):length(dir)]]
+        if (length(yLeft) < control$minbucket || length(yRight) <
+            control$minbucket) {
+          dev = c(dev, 0)
+        }
+        else {
+          if (method == "lme") {
+            modelLeft = try(lme(lmeFormula, data = parms[groupingFactor %in%
+                                                           yLeft, ], random = randomFormula, correlation = R,
+                                na.action = na.omit), silent = TRUE)
+            modelRight = try(lme(lmeFormula, data = parms[groupingFactor %in%
+                                                            yRight, ], random = randomFormula, correlation = R,
+                                 na.action = na.omit), silent = TRUE)
+          }
+          else if (method == "nlme") {
+            modelLeft = try(nlme(model = nlme.model,
+                                 fixed = fixedFormula, data = parms[groupingFactor %in%
+                                                                      yLeft, ], random = randomFormula, correlation = R,
+                                 na.action = na.omit, start = start, group = group),
+                            silent = TRUE)
+            modelRight = try(nlme(model = nlme.model,
+                                  fixed = fixedFormula, data = parms[groupingFactor %in%
+                                                                       yRight, ], random = randomFormula, correlation = R,
+                                  na.action = na.omit, start = start, group = group),
+                             silent = TRUE)
+          }
+          if (any(class(modelLeft) == "lme") | any(class(modelLeft) ==
+                                                   "nlme") && any(class(modelRight) == "lme") |
+              any(class(modelRight) == "nlme")) {
+            dev = c(dev, modelLeft$logLik + modelRight$logLik)
+          }
+          else {
+            dev = c(dev, 0)
+          }
+        }
+      }
+      list(goodness = dev + abs(rootDev) * (dev != 0) *
+             2, direction = dir)
     }
   }
   # The init function.  This is used, to the best of my knowledge, to initialize the process.
