@@ -26,7 +26,7 @@
 #' @import ggplot2
 #' @importFrom grDevices dev.cur gray rainbow
 #' @importFrom graphics legend plot points rect text
-#' @importFrom stats formula lm na.omit predict quantile rnorm time
+#' @importFrom stats formula lm na.omit predict quantile rnorm time nls
 #' @export
 #' @examples
 #' library(longRPart2)
@@ -57,7 +57,7 @@ lrp <- function(method,
       mod <- lme(lmeFormula,data=data,random=randomFormula,correlation=R,na.action=na.omit)
     }else{
       mod <- nlme(model=nlme.model,fixed=fixedFormula,data=data,
-                  random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
+                  random=randomFormula,correlation=R,na.action=na.omit,start=start,groups=group)
     }
 
     control$cp <- 1 - (-2*mod$logLik - min.dev)/(-2*mod$logLik)

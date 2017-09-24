@@ -1,9 +1,12 @@
 Package: longRPart2
 Type: Package
 Title: Recursive partitioning of longitudinal data
-Version: 0.0.0.9000
-Date: 2016-12-11
-Author: Sam Stewart and Mohamed Abdolell
+Version: 0.0.1
+Author: Ross Jacobucci [aut],
+        Sam Stewart[aut,cre], 
+        Mohamed Abdolell [aut, cre], 
+        Sarfaraz Serang [ctb],
+        Gabriela Stegmann [ctb]
 Maintainer: Ross Jacobucci <rcjacobuc@gmail.com>
 Depends: 
          nlme,
@@ -11,7 +14,7 @@ Depends:
          rpart,
          formula.tools,
          MASS
-Description: Performs recursive partitioning of mixed effects models,
+Description: Performs recursive partitioning of linear and nonlinear mixed effects models,
     specifically for longitudinal data. The package is an
     extension of the original longRPart package.
 License: GPL
