@@ -33,7 +33,7 @@
 #' # example goes here
 
 
-longRPart2 <- function(method,
+lrp <- function(method,
                        nlme.model=NULL,
                        randomFormula,
                        fixedFormula=NULL,
@@ -100,7 +100,7 @@ longRPart2 <- function(method,
 
     evaluation <- function(y, wt, parms){
       model = nlme(model=nlme.model,fixed=fixedFormula,data=parms[groupingFactor%in%y,],
-                   random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
+                   random=randomFormula,correlation=R,na.action=na.omit,start=start,groups=group)
 
       # try not returning slope -- may be only for plotting
       slope=1
@@ -146,7 +146,7 @@ longRPart2 <- function(method,
       rootDev = nlme(model = nlme.model, fixed = fixedFormula,
                      data = parms[groupingFactor %in% y, ], random = randomFormula,
                      correlation = R, na.action = na.omit, start = start,
-                     group = group)$logLik
+                     groups = group)$logLik
     }
     if (continuous) {
       for (i in xUnique) {
@@ -169,12 +169,12 @@ longRPart2 <- function(method,
             modelLeft = try(nlme(model = nlme.model,
                                  fixed = fixedFormula, data = parms[groupingFactor %in%
                                                                       yLeft, ], random = randomFormula, correlation = R,
-                                 na.action = na.omit, start = start, group = group),
+                                 na.action = na.omit, start = start, groups = group),
                             silent = TRUE)
             modelRight = try(nlme(model = nlme.model,
                                   fixed = fixedFormula, data = parms[groupingFactor %in%
                                                                        yRight, ], random = randomFormula, correlation = R,
-                                  na.action = na.omit, start = start, group = group),
+                                  na.action = na.omit, start = start, groups = group),
                              silent = TRUE)
           }
           if (any(class(modelLeft) == "lme") && any(class(modelRight) ==
@@ -221,12 +221,12 @@ longRPart2 <- function(method,
             modelLeft = try(nlme(model = nlme.model,
                                  fixed = fixedFormula, data = parms[groupingFactor %in%
                                                                       yLeft, ], random = randomFormula, correlation = R,
-                                 na.action = na.omit, start = start, group = group),
+                                 na.action = na.omit, start = start, groups = group),
                             silent = TRUE)
             modelRight = try(nlme(model = nlme.model,
                                   fixed = fixedFormula, data = parms[groupingFactor %in%
                                                                        yRight, ], random = randomFormula, correlation = R,
-                                  na.action = na.omit, start = start, group = group),
+                                  na.action = na.omit, start = start, groups = group),
                              silent = TRUE)
           }
           if (any(class(modelLeft) == "lme") | any(class(modelLeft) ==
@@ -270,7 +270,7 @@ longRPart2 <- function(method,
     model$lmeFormula = lmeFormula
   }else if(method=="nlme"){
     model$nlmeModel <- nlme(model=nlme.model,fixed=fixedFormula,data=data,
-         random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
+         random=randomFormula,correlation=R,na.action=na.omit,start=start,groups=group)
     model$fixedFormula <- fixedFormula
     model$nlme.model <- nlme.model
   }
@@ -288,7 +288,7 @@ longRPart2 <- function(method,
       resid.var[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$sigma
     }else if(method=="nlme"){
       model.out <- nlme(model=nlme.model,fixed=fixedFormula,data=data[id,],
-                              random=randomFormula,correlation=R,na.action=na.omit,start=start,group=group)
+                              random=randomFormula,correlation=R,na.action=na.omit,start=start,groups=group)
       summary[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
       fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
       var.corr[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$modelStruct[[1]]
@@ -303,6 +303,11 @@ longRPart2 <- function(method,
   model$rpart_out <- model.rpart
   model$randomFormula = randomFormula
   model$R = R
+
+  if(method=="nlme"){
+    model$group = group
+    model$start = start
+  }
   model$method = method
   model$data = data
   model$groupingName = groupingName

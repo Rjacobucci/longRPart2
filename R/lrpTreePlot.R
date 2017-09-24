@@ -7,16 +7,27 @@
 #' @export
 
 lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){
-  indexes = plot(model)
+
+
+
+
+  indexes = plot(model$rpart_out)
   confounding = (length(model$lmeModel$contrasts)>1)
   n = length(model$rpart_out$nodeLines)
   t = length(model$rpart_out$levels)
-  plot(model,ylim=range(indexes$y)-c(diff(range(indexes$y))*.125,0),xlim=range(indexes$x)+c(-1,1)*diff(range(indexes$x)*.1))
+  plot(model$rpart_out,ylim=range(indexes$y)-c(diff(range(indexes$y))*.125,0),xlim=range(indexes$x)+c(-1,1)*diff(range(indexes$x)*.1))
   f = model$rpart_out$frame
   leaves = (1:dim(f)[1])[f$var=="<leaf>"]
-  terms = attr(terms(model$lmeFormula),"term.labels")
+  if(model$method=="lme"){
+    terms = attr(terms(model$fixedFormula),"term.labels")
+    responseName = attr(terms(getResponseFormula(model$fixedFormula)),"term.labels")
+  }else{
+    stop("currently not working for nlme models")
+    terms = attr(terms(model$nlme.model),"term.labels")
+    responseName = attr(terms(getResponseFormula(model$nlme.model)),"term.labels")
+  }
   timeVar = model$data[,names(model$data)==terms[1]]
-  responseName = attr(terms(getResponseFormula(model$lmeFormula)),"term.labels")
+
   continuous = !is.factor(timeVar)
   nodes = unique(model$rpart_out$where)
   timeValues = unique(timeVar)
@@ -25,13 +36,23 @@ lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){
   plotList = list()
   for(i in 1:length(nodes)){
     dat=model$data[model$rpart_out$where==nodes[i],]
-    mod = lme(model$lmeFormula,data=dat,random=model$randomFormula,correlation=model$R,na.action=na.omit)
+
+  if(model$method=="lme"){
+    mod = lme(model$fixedFormula,data=dat,random=model$randomFormula,correlation=model$R,na.action=na.omit)
+
     if(length(terms)>1){
       form = formula(paste(responseName,'~as.numeric(',terms[1],')|',paste(terms[-1],sep='\ '),sep=''))
     }
     else{
       form = formula(paste(responseName,'~as.numeric(',terms[1],')',sep=''))
     }
+
+  }else{
+    mod = nls(formula=model$nlme.model,data=dat)
+    form = model$nlme.model
+  }
+
+
     plotDat = plot(mod,form)
     condLevels = plotDat$condlevels
     pts = list()
@@ -57,7 +78,7 @@ lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){
       points(x=seq(limx[1],limx[2],length.out=length(pts)),pts,lwd=2,type='l',lty=j,col=colors[i])
     }
   }
-  text(model,use.n=use.n)
+  text(model$rpart_out,use.n=use.n)
   lineTypes = c("dashed", "dotted", "dotdash", "longdash", "twodash")
   text2 = character()
   if(length(terms)>1){
