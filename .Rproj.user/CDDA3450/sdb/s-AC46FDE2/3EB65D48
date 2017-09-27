@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Summary results from lrp.\n#'\n#' @param object An object from lrp.\n#' @param ... Other arguments.\n#' @method summary lrp\n#' @export\n#'\n\n\nsummary.lrp <- function(object, ...){\n\n  ret <- list()\n\n  ret$importance <- object$rpart_out$variable.importance\n\n\n  mat <- list()\n  count=1\n  for(i in 1:length(object$fixed_effects)){\n    if(is.null(object$fixed_effects[[i]])){\n      count=count\n    }else{\n      if(count==1){\n        names <- c(names(object$fixed_effects[[i]]))\n      }\n      mat[[count]] <- c(i,object$fixed_effects[[i]],object$resid.var[[i]])\n      count = count+1\n    }\n  }\n\n  mm = data.frame(matrix(unlist(mat),nrow=(count-1),byrow=T))\n  colnames(mm)[1] <- \"node\"\n  names(mm)[2:(ncol(mm)-1)] <- names\n  names(mm)[ncol(mm)] <- \"resid\"\n\n  ret$parameters <- mm\n\n  class(ret) <- \"summary.lrp\"\n  print(ret)\n}\n",
+    "created" : 1506529494859.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1004379332",
+    "id" : "3EB65D48",
+    "lastKnownWriteTime" : 1506532026,
+    "last_content_update" : 1506532026511,
+    "path" : "~/GitHub/longRPart2/R/summary.R",
+    "project_path" : "R/summary.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

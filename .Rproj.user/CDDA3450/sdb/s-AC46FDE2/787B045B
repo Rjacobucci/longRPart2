@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "length(lcart.mod1$fixed_effects)\n\nmat <- matrix(NA,length(lcart.mod1$fixed_effects),6)\n\nmat <- list()\ncount=1\nfor(i in 1:length(lcart.mod1$fixed_effects)){\n  if(is.null(lcart.mod1$fixed_effects[[i]])){\n    count=count\n  }else{\n    if(count==1){\n      names <- c(names(lcart.mod1$fixed_effects[[i]]),names(lcart.mod1$resid.var[[i]]))\n    }\n    \n    mat[[count]] <- c(i,lcart.mod1$fixed_effects[[i]],lcart.mod1$resid.var[[i]])\n    count = count+1\n  }\n}\n\nmm = data.frame(matrix(unlist(mat),nrow=(count-1),byrow=T))\nnames(mm)[1] <- \"node\"\nnames(mm)[2:(ncol(mm)-1)] <- names\nnames(mm)[ncol(mm)] <- \"resid\"\n\nunlist(lcart.mod1$fixed_effects,recursive=FALSE)\n",
+    "created" : 1506529866541.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "966031101",
+    "id" : "787B045B",
+    "lastKnownWriteTime" : 2820135313473544819,
+    "last_content_update" : 1506531979183,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
