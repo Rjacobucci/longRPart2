@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Plot function for cv_regsem\n#'\n#' @param x An x from cv_regsem.\n#' @param ... Other arguments.\n#' @param pars Which parameters to plot\n#' @param show.minimum What fit index to use\n#' @param col A specification for the default plotting color.\n#' @param type what type of plot should be drawn. Possible types are \"p\" for points, \"l\" for lines, or \"b\" for both\n#' @param lwd line width\n#' @param h_line Where to draw horizontal line\n#' @param lty line type\n#' @param xlab X axis label\n#' @param ylab Y axis label\n#' @method plot cvregsem\n#' @export\n\n\n\nplot.cvregsem <- function (x, ..., pars = NULL, show.minimum=\"BIC\",\n                              col = NULL, type = \"l\", lwd = 3,h_line=0,\n                              lty = 1, xlab = NULL, ylab = NULL)\n{\n  if (is.null(pars))\n    pars <- x$pars_pen\n  if (!(type %in% c(\"p\", \"b\", \"l\")))\n    stop(\"Unknown plot type given.\")\n  if (!class(x) == \"cvregsem\")\n    stop(\"Specified x is not a x from cv_regsem(.\")\n  if (is.null(xlab))\n    xlab <- \"Penalty\"\n  if (is.null(ylab))\n    ylab <- \"Estimate\"\n  coef.mat <- x$parameters[, pars]\n  if (is.null(col)) {\n    colls <- colorspace::rainbow_hcl(length(pars))\n  }\n  else {\n    if (length(col) < length(pars))\n      col <- rep(col, ceiling(length(pars)/length(col)))\n    colls <- col\n  }\n\n  # filter NA values in fit function\n  ydat <- coef.mat[, 1]\n  xdat <- x$fits[, \"lambda\"]\n  rm.ids <- which(x$fits[,\"conv\"] != 0)\n  if (length(rm.ids)>0) {\n    xdat <- xdat[-rm.ids]\n    ydat <- ydat[-rm.ids]\n    coef.mat <- coef.mat[-rm.ids, ]\n  }\n\n  # adjust plot limits relative to scale not by absolute increment\n  plot(xdat, ydat, ylim = c(min(coef.mat) * 0.95, max(coef.mat) * 1.05), ylab = ylab, xlab = xlab,\n       type = \"n\")\n  for (i in 1:(ncol(coef.mat))) {\n    if (type == \"l\" || type == \"b\")\n      lines(xdat, coef.mat[, i], lty = lty,\n            col = colls[i], lwd = lwd)\n    if (type == \"p\" || type == \"b\")\n      points(xdat, coef.mat[, i])\n  }\n\n  abline(a=h_line,b=0)\n\n  # add minimum\n  if (!is.null(show.minimum)) {\n    min.id <- which.min(x$fits[,show.minimum])\n    lambda <- x$fits[min.id,1]\n\n    abline(v=lambda,lty=2)\n\n    pnts <- x$parameters[min.id,pars]\n    points(rep(lambda,length(pnts)),pnts, col=colls,cex=2, pch=19)\n    points(rep(lambda,length(pnts)),pnts, col=\"black\",cex=1)\n  }\n  # --\n}\n",
+    "created" : 1506527340803.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2478630071",
+    "id" : "183CDB5A",
+    "lastKnownWriteTime" : 1506371626,
+    "last_content_update" : 1506371626,
+    "path" : "~/GitHub/regsem/R/plot.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

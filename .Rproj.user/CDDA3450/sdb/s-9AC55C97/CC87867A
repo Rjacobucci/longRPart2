@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#wisc <- read.table(\"C:/Users/RJacobucci/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat\")\nwisc <- read.table(\"C:/Users/rjacobuc/Documents/GitHub/EDM_Labs/2015/wisc4vpe.dat\")\n\n#wisc <- read.table(file.choose()) # use directory to find wisc4vpe.dat\nnames(wisc)<- c(\"V1\",\"V2\",\"V4\",\"V6\",\"P1\",\"P2\",\"P4\", \"P6\", \"Moeducat\")\n\n# install longRPart2 from source\n\n\n\nwisc.verb <- wisc[,c(1:4,9)]\n\n# create subset for plotting\nntot <- nrow(wisc.verb)    # total number of observations\nwisc.verb.sel <- wisc.verb[sample(ntot, 30), ]\n\nwisc.long <- reshape(wisc.verb, varying = c(\"V1\", \"V2\", \"V4\", \"V6\"), v.names = \"verbal\",\n                     times = c(1, 2, 4, 6), direction = \"long\")\n\nwisc.long.sel <- reshape(wisc.verb.sel, varying = c(\"V1\", \"V2\", \"V4\", \"V6\"),\n                         v.names = \"verbal\", times = c(1, 2, 4, 6),\n                         direction = \"long\")\nhead(wisc.long,3)\nnames(wisc.long)[2] <- \"grade\"\nnames(wisc.long.sel)[2] <- \"grade\"\n\n\n## longRPart2\n\n\nlcart.mod1 <- lrp(method=\"lme\",\n                         fixedFormula=verbal ~ grade,\n                         rPartFormula = ~ Moeducat,\n                         randomFormula=~1|id,\n                         data=wisc.long)\n\nplot(lcart.mod1)\nlcart.mod1$rpart_out\n\n\nsummary(lcart.mod1)\nplot(lcart.mod1);text(lcart.mod1)\n\n# mean slope for mother's education = 0 is 4.1\n# mean slope for mother's education = 1 is 5\n\n\nlibrary(semtree);library(OpenMx)\n\nresVars <- mxPath( from=c(\"V1\", \"V2\", \"V4\", \"V6\"), arrows=2,\n                   free=TRUE, values = c(1,1,1,1),\n                   labels=c(\"residual\",\"residual\",\"residual\",\"residual\") )\nlatVars<- mxPath( from=c(\"intercept\",\"slope\"), arrows=2, connect=\"unique.pairs\",\n                  free=TRUE, values=c(1,.4,1), labels=c(\"vari1\",\"cov1\",\"vars1\") )\nintLoads<- mxPath( from=\"intercept\", to=c(\"V1\", \"V2\", \"V4\", \"V6\"), arrows=1,\n                   free=FALSE, values=c(1,1,1,1) )\nsloLoads<- mxPath( from=\"slope\", to=c(\"V1\", \"V2\", \"V4\", \"V6\"), arrows=1,\n                   free=FALSE, values=c(1,2,4,6) )\nmanMeans<- mxPath( from=\"one\", to=c(\"V1\", \"V2\", \"V4\", \"V6\"), arrows=1,\n                   free=FALSE, values=c(0,0,0,0) )\nlatMeans<- mxPath( from=\"one\", to=c(\"intercept\",\"slope\"), arrows=1,\n                   free=TRUE,  values=c(0,1), labels=c(\"meani1\",\"means1\") )\ndataRaw<- mxData( observed=wisc[,c(1:4,9)], type=\"raw\" )\nlgm.mod<- mxModel(\"LGM\", type=\"RAM\",\n                  manifestVars=c(\"V1\", \"V2\", \"V4\", \"V6\"),\n                  latentVars=c(\"intercept\",\"slope\"),dataRaw,\n                  resVars, latVars, intLoads, sloLoads, manMeans, latMeans)\nmod.run <- mxRun(lgm.mod);coef(mod.run)\n\n\nmytree <- semtree(mod.run,wisc[,c(1:4,9)]) # only moeducat as covariate\nplot(mytree)\n\n# exact same results as longRPart2\n",
+    "created" : 1506527274733.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "737140963",
+    "id" : "CC87867A",
+    "lastKnownWriteTime" : 1506527483,
+    "last_content_update" : 1506527843392,
+    "path" : "~/GitHub/longRPart2_scripts/example.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

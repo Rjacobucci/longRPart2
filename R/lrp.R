@@ -312,5 +312,9 @@ lrp <- function(method,
   model$data = data
   model$groupingName = groupingName
   model$rPartFormula = rPartFormula
-  return(model)
+
+  model$call <- match.call()
+  class(model) <- "lrp"
+
+  model
 }
