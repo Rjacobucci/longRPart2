@@ -26,7 +26,7 @@
 #' @import ggplot2
 #' @importFrom grDevices dev.cur gray rainbow
 #' @importFrom graphics legend plot points rect text
-#' @importFrom stats formula lm na.omit predict quantile rnorm time nls
+#' @importFrom stats formula lm na.omit predict quantile rnorm time nls terms
 #' @export
 #' @examples
 #' library(longRPart2)
