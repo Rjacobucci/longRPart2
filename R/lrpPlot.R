@@ -7,6 +7,12 @@
 #' @export
 
 lrpPlot <- function(model,smoothing="n",color=NULL,place="bottomright"){
+
+  if(model$method=="nlme"){
+    stop("currently not working for nlme models")
+  }
+
+
   #smoothing can be either n for none, p for partial, or c for complete
   ### ONLY 'n' implemented for now
   terms = attr(terms(model$lmeFormula),"term.labels")

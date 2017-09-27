@@ -22,7 +22,7 @@ lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){
     terms = attr(terms(model$fixedFormula),"term.labels")
     responseName = attr(terms(getResponseFormula(model$fixedFormula)),"term.labels")
   }else{
-    stop("currently not working for nlme models")
+   # stop("currently not working for nlme models")
     terms = attr(terms(model$nlme.model),"term.labels")
     responseName = attr(terms(getResponseFormula(model$nlme.model)),"term.labels")
   }
@@ -47,13 +47,16 @@ lrpTreePlot <- function(model,use.n=TRUE,colors=NULL,place="bottomright"){
       form = formula(paste(responseName,'~as.numeric(',terms[1],')',sep=''))
     }
 
+    plotDat = plot(mod,form) # causing problem
+
   }else{
     mod = nls(formula=model$nlme.model,data=dat)
-    form = model$nlme.model
+
+    #form= formula(paste(responseName,"~ fitted(.)"))
+    plotDat = plot(mod) # causing problem
+
   }
 
-
-    plotDat = plot(mod,form)
     condLevels = plotDat$condlevels
     pts = list()
     for(j in 1:length(plotDat$panel.args)){
