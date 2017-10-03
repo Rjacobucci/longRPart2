@@ -30,20 +30,9 @@
 #' @export
 #' @examples
 #' library(longRPart2)
-#' data(ex.data.3)
-#' \dontshow{
-#' lcart.mod0 <- lrp(method="nlme",
-#'                  nlme.model=y~b0i+b1i*time,
-#'                  fixedFormula=b0i+b1i~1,
-#'                  rPartFormula = ~ z,
-#'                  group= ~ id,
-#'                  randomFormula=b0i+b1i~1,
-#'                  data=ex.data.3[1:20,],
-#'                  start=c(10,5))
-#'}
-#'
 #'
 #' \donttest{
+#' data(ex.data.3)
 #' model.0 = nlme(y~b0i+b1i*time,
 #'                data=ex.data.3,
 #'                fixed=b0i+b1i~1,
@@ -60,10 +49,12 @@
 #'                  randomFormula=b0i+b1i~1,
 #'                  data=ex.data.3,
 #'                  start=c(10,5))
+#'}
+#'data(lcart.mod1)
 #'summary(lcart.mod1)
 #'plot(lcart.mod1)
 #'lrp2Plot(lcart.mod1)
-#'}
+#'
 
 lrp <- function(method,
                        nlme.model=NULL,
