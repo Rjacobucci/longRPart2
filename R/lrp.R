@@ -38,7 +38,7 @@
 #'                  rPartFormula = ~ z,
 #'                  group= ~ id,
 #'                  randomFormula=b0i+b1i~1,
-#'                  data=ex.data.3[1:100,],
+#'                  data=ex.data.3[1:20,],
 #'                  start=c(10,5))
 #'}
 #'
