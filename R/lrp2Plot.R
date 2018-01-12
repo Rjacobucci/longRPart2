@@ -10,7 +10,6 @@
 #' @export
 #' @examples
 #' library(longRPart2)
-#' # example goes here
 
 lrp2Plot = function(model,smooth_method="gam"){
 
