@@ -4,13 +4,15 @@
 #'
 #'
 #' @param model A longrpart2 model.
+#' @param smooth_method Whether to use generalized additive models, smooth_method="gam",
+#'                      or loess, smooth_method="loess".
 #' @keywords longitudinal recursive partitioning mixed effects
 #' @export
 #' @examples
 #' library(longRPart2)
 #' # example goes here
 
-lrp2Plot = function(model){
+lrp2Plot = function(model,smooth_method="gam"){
 
   #helper sub-functions
   param.extract = function(model) {
@@ -184,7 +186,7 @@ lrp2Plot = function(model){
                                         "term.labels")]]
 
   p = ggplot(data = curve.df, aes(x = time, y = y, group = grp,
-                                  color = "black", linetype = ltype)) + geom_smooth(se = F) +
+                                  color = "black", linetype = ltype)) + geom_smooth(se = F,method=smooth_method) +
     theme_bw() + guides(linetype = F) + facet_wrap(~node, scales = "free") +
     labs(title = paste("Node"), x = time.var, y = out.name) +
     xlim(min(curve.df$time), max(curve.df$time)) + ylim(min(c(curve.df$y,
