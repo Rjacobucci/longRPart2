@@ -6,5 +6,13 @@
 #' @export
 
 plot.lrp <- function (x, ...){
-  plot(x$rpart_out);text(x$rpart_out)
+
+  rp = x$rpart_out
+
+  node.fun1 <- function(x, labs, digits, varlen)
+  {
+    paste("dev", round(summary(x)$frame$dev,2))
+  }
+
+  rpart.plot::rpart.plot(rp,nn=T,node.fun=node.fun1)
 }

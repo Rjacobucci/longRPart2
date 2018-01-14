@@ -16,7 +16,8 @@ Depends:
          formula.tools,
          MASS
 Suggests:
-        mgcv
+        mgcv,
+        rpart.plot
 Description: Performs recursive partitioning of linear and nonlinear mixed effects models,
     specifically for longitudinal data. The package is an
     extension of the original 'longRPart' package by 
