@@ -17,7 +17,6 @@ Longitudinal Recursive Partitioning Plotting Function
 }
 \examples{
 library(longRPart2)
-# example goes here
 }
 \keyword{effects}
 \keyword{longitudinal}

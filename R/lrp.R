@@ -252,9 +252,9 @@ lrp <- function(method,
                                   na.action = na.omit, start = start, groups = group),
                              silent = TRUE)
           }
-          if (any(class(modelLeft) == "lme") | any(class(modelLeft) ==
-                                                   "nlme") && any(class(modelRight) == "lme") |
-              any(class(modelRight) == "nlme")) {
+          if ((any(class(modelLeft) == "lme") | any(class(modelLeft) ==
+                                                    "nlme")) && (any(class(modelRight) == "lme") |
+                                                                 any(class(modelRight) == "nlme"))) {
             dev = c(dev, modelLeft$logLik + modelRight$logLik)
           }
           else {
