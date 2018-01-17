@@ -1,7 +1,7 @@
 Package: longRPart2
 Type: Package
 Title: Recursive Partitioning of Longitudinal Data
-Version: 0.2.1
+Version: 0.2.2
 Author: Ross Jacobucci [aut,cre],
         Sam Stewart[aut], 
         Mohamed Abdolell [aut], 

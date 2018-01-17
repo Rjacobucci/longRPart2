@@ -5,13 +5,13 @@
 #'
 #' @param model A longrpart2 model.
 #' @param smooth_method Whether to use generalized additive models, smooth_method="gam",
-#'                      or loess, smooth_method="loess".
+#'                      or loess, smooth_method="loess". Defaults to loess.
 #' @keywords longitudinal recursive partitioning mixed effects
 #' @export
 #' @examples
 #' library(longRPart2)
 
-lrp2Plot = function(model,smooth_method="gam"){
+lrp2Plot = function(model,smooth_method="loess"){
 
   #helper sub-functions
   param.extract = function(model) {
