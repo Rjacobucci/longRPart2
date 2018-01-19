@@ -53,7 +53,8 @@
 #'data(lcart.mod1)
 #'summary(lcart.mod1)
 #'plot(lcart.mod1)
-#'lrp2Plot(lcart.mod1)
+#'# for smooth_method, "loess" is recommend but "gam" faster
+#'lrp2Plot(lcart.mod1,smooth_method="gam")
 #'
 
 lrp <- function(method,
