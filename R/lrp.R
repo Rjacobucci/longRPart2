@@ -299,6 +299,10 @@ lrp <- function(method,
     model$nlme.model <- nlme.model
   }
 
+  frame <- model.rpart$frame
+  node2 = row.names(frame[frame[,"var"] == "<leaf>",])
+  model$node2 = node2
+
   model$leaf_node <- model.rpart$where
   summary = fixed_effects = var.corr = resid.var = list()
   for(j in 1:length(table(model.rpart$where))){
@@ -306,17 +310,17 @@ lrp <- function(method,
 
     if(method=="lme"){
       model.out = lme(lmeFormula,data=data[id,],random=randomFormula,correlation=R,na.action=na.omit)
-      summary[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
-      fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
-      var.corr[[as.numeric(names(table(model.rpart$where)))[j]]] <-model.out$modelStruct[[1]]
-      resid.var[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$sigma
+      summary[[node2[j]]] <- summary(model.out)
+      fixed_effects[[node2[j]]] <- fixed.effects(model.out)
+      var.corr[[node2[j]]] <-model.out$modelStruct[[1]]
+      resid.var[[node2[j]]] <- model.out$sigma
     }else if(method=="nlme"){
       model.out <- nlme(model=nlme.model,fixed=fixedFormula,data=data[id,],
                               random=randomFormula,correlation=R,na.action=na.omit,start=start,groups=group)
-      summary[[as.numeric(names(table(model.rpart$where)))[j]]] <- summary(model.out)
-      fixed_effects[[as.numeric(names(table(model.rpart$where)))[j]]] <- fixed.effects(model.out)
-      var.corr[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$modelStruct[[1]]
-      resid.var[[as.numeric(names(table(model.rpart$where)))[j]]] <- model.out$sigma
+      summary[[node2[j]]] <- summary(model.out)
+      fixed_effects[[node2[j]]] <- fixed.effects(model.out)
+      var.corr[[node2[j]]] <- model.out$modelStruct[[1]]
+      resid.var[[node2[j]]] <- model.out$sigma
     }
   }
 

@@ -177,12 +177,16 @@ lrp2Plot = function(model,smooth_method="loess"){
   model$data$node = model$leaf_node
 
 
-
   model$data$groupingName =   dat[[attr(terms(splitFormula(model$group, "~")[[1]]),
                                         "term.labels")]]
 
   model$data$responseName =   dat[[attr(terms(getResponseFormula(model$nlme.model)),
                                         "term.labels")]]
+
+  levels(curve.df$node) = model$node2
+
+  model$data$node <- as.factor(model$data$node)
+  levels(model$data$node) <- model$node2
 
   p = ggplot(data = curve.df, aes(x = time, y = y, group = grp,
                                   color = "black", linetype = ltype)) + geom_smooth(se = F,method=smooth_method) +
@@ -191,7 +195,7 @@ lrp2Plot = function(model,smooth_method="loess"){
     xlim(min(curve.df$time), max(curve.df$time)) + ylim(min(c(curve.df$y,
                                                               model$data$y)),
                                                         max(c(curve.df$y, model$data$y))) +
-    scale_color_manual(labels = sort(unique(model$leaf_node)),
+    scale_color_manual(labels = model$node2,#sort(unique(model$leaf_node)),
                        values = c("black")) +
     theme(axis.line=element_line(),
           plot.background = element_blank(),
