@@ -5,8 +5,8 @@
 \title{Longitudinal Recursive Partitioning}
 \usage{
 lrp(method, nlme.model = NULL, randomFormula, fixedFormula = NULL, data,
-  start, group, rPartFormula, weight = NULL, R = NULL, min.dev = NULL,
-  control = rpart.control())
+  start, group, rPartFormula, weight = NULL, use_parallel = FALSE,
+  R = NULL, min.dev = NULL, control = rpart.control())
 }
 \arguments{
 \item{method}{Whether to use lme() or nlme(). Use either method="lme" or method="nlme".
@@ -27,6 +27,8 @@ This changes what additional arguments need to be passed.}
 \item{rPartFormula}{Not sure yet}
 
 \item{weight}{Sample weights to be passed to rpart}
+
+\item{use_parallel}{Whether to parallelize the split models}
 
 \item{R}{Correlation matrix to use for nlme. this is correlation=}
 
