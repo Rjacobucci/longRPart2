@@ -4,7 +4,9 @@
 \name{lcart.mod1}
 \alias{lcart.mod1}
 \title{Longitudinal data with groups}
-\format{An object of class "lrp"}
+\format{
+An object of class "lrp"
+}
 \usage{
 lcart.mod1
 }

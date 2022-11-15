@@ -4,9 +4,21 @@
 \alias{lrp}
 \title{Longitudinal Recursive Partitioning}
 \usage{
-lrp(method, nlme.model = NULL, randomFormula, fixedFormula = NULL, data,
-  start, group, rPartFormula, weight = NULL, use_parallel = FALSE,
-  R = NULL, min.dev = NULL, control = rpart.control())
+lrp(
+  method,
+  nlme.model = NULL,
+  randomFormula,
+  fixedFormula = NULL,
+  data,
+  start,
+  group,
+  rPartFormula,
+  weight = NULL,
+  use_parallel = FALSE,
+  R = NULL,
+  min.dev = NULL,
+  control = rpart.control()
+)
 }
 \arguments{
 \item{method}{Whether to use lme() or nlme(). Use either method="lme" or method="nlme".

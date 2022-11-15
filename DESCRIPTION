@@ -1,7 +1,7 @@
 Package: longRPart2
 Type: Package
 Title: Recursive Partitioning of Longitudinal Data
-Version: 0.2.4
+Version: 0.2.5
 Author: Ross Jacobucci [aut,cre],
         Sam Stewart[aut], 
         Mohamed Abdolell [aut], 
@@ -23,5 +23,5 @@ Description: Performs recursive partitioning of linear and nonlinear mixed effec
     extension of the original 'longRPart' package by 
     Stewart and Abdolell (2013) <https://cran.r-project.org/package=longRPart>. 
 License: GPL
-RoxygenNote: 6.0.1
+RoxygenNote: 7.2.1
 LazyData: true

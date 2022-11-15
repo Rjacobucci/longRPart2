@@ -4,10 +4,12 @@
 \alias{plot.lrp}
 \title{Plot function for longRPart2}
 \usage{
-\method{plot}{lrp}(x, ...)
+\method{plot}{lrp}(x, box.palette = "auto", ...)
 }
 \arguments{
 \item{x}{A model from lrp.}
+
+\item{box.palette}{Color scheme for rpart.plot}
 
 \item{...}{Other arguments.}
 }
